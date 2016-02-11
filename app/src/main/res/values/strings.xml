@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">FormFiller</string>
+    <string name="action_settings">Settings</string>
+    <string name="lay_choose_fill_butt">fill form</string>
+    <string name="title_activity_activity_fill_form">Activity_fill_form</string>
+    <string name="lay_fill_confirm_butt">send form</string>
+</resources>
