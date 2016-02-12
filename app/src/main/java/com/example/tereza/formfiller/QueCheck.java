@@ -3,6 +3,7 @@ package com.example.tereza.formfiller;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Layout;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,10 +20,11 @@ import android.widget.TextView;
 public class QueCheck extends QuestionAb {
 
     private static final QuestionType type = QuestionType.check;
-    private CheckBox cb;
+    private CheckBox[] cb;
 
     public QueCheck(String description, String[][] options, Context context) {
         super(description, options, context);
+        this.cb = new CheckBox[options.length];
     }
 
     public QuestionType getQuestionType() {
@@ -30,19 +32,28 @@ public class QueCheck extends QuestionAb {
     }
 
     @Override
+    public void setAnswer(int index) {
+        answers[index] = !answers[index];
+        Log.e("Question answer", this.description + " " + this.options[index][0]);
+    }
+
+    @Override
     public void setOnListener(RadioGroup.OnCheckedChangeListener radioListener, CompoundButton.OnCheckedChangeListener checkboxListener) {
-        cb.setOnCheckedChangeListener(checkboxListener);
+        for (int i = 0; i < cb.length; i++) {
+            cb[i].setOnCheckedChangeListener(checkboxListener);
+        }
     }
 
     @Override
     public void setDynamicLayout() {
         super.setDynamicLayout();
         for (int i = 0; i < super.options.length; i++) {
-            cb = new CheckBox(super.context);
-            cb.setText(options[i][0]);
-            cb.setTextSize(17);
-            cb.setId(i);
-            super.linLay.addView(cb);
+            cb[i] = new CheckBox(super.context);
+            cb[i].setText(options[i][0]);
+            cb[i].setTextSize(17);
+            cb[i].setChecked(super.answers[i]);
+            cb[i].setId(i);
+            super.linLay.addView(cb[i]);
         }
     }
 

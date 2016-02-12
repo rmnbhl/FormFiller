@@ -160,6 +160,7 @@ public class Activity_fill_form extends AppCompatActivity {
                     case "send" :
                         Thread.sleep(2500);
                         controller.sendFilledForm(form);
+                        printAnswers();
                         break;
                 }
                 resp = params[0];
@@ -169,6 +170,20 @@ public class Activity_fill_form extends AppCompatActivity {
                 resp = e.getMessage();
             }
             return resp;
+        }
+
+        private void printAnswers() {
+            Question q;
+            System.out.println("ANSWERS:");
+            for (int i = 0; i < questions.size(); i++) {
+                q = questions.get(i);
+                for (int j = 0; j < q.getAnswers().length; j++) {
+                    if(q.getAnswers()[j])
+                        System.out.println(q.getDescription() + ":\n " +
+                                q.getOptions()[j][0]);
+                }
+
+            }
         }
 
         @Override

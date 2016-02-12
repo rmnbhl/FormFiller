@@ -36,11 +36,6 @@ public abstract class QuestionAb implements Question {
     }
 
     @Override
-    public void setAnswer(int index) {
-        this.answers[index] = true;
-        Log.e("Question answer", this.description + this.options[0][0]);
-    }
-
     public String[][] getOptions() {
         return options;
     }
@@ -49,5 +44,15 @@ public abstract class QuestionAb implements Question {
         this.setDynamicLayout();
 
         return this.linLay;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public boolean[] getAnswers() {
+        return answers;
     }
 }

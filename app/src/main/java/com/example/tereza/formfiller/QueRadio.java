@@ -3,6 +3,7 @@ package com.example.tereza.formfiller;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -32,6 +33,15 @@ public class QueRadio extends QuestionAb {
     }
 
     @Override
+    public void setAnswer(int index) {
+        for (int i = 0; i < super.answers.length; i++) {
+            super.answers[i] = false;
+        }
+        super.answers[index] = true;
+        Log.e("Question answer", this.description + this.options[index][0]);
+    }
+
+    @Override
     public void setDynamicLayout() {
         super.setDynamicLayout();
         rg = new RadioGroup(super.context);
@@ -40,6 +50,7 @@ public class QueRadio extends QuestionAb {
             rb.setText(options[i][0]);
             rb.setTextSize(17);
             rb.setId(i);
+            rb.setChecked(super.answers[i]);
             rg.addView(rb);
         }
         super.linLay.addView(rg);
