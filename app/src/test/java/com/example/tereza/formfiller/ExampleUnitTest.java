@@ -1,4 +1,4 @@
-package com.example.tereza.formfiller;
+package com.example.tereza.structures;
 
 import org.junit.Test;
 

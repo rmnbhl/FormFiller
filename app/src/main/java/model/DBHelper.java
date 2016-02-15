@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.tereza.formfiller.R;
+import com.example.tereza.structures.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

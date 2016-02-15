@@ -1,17 +1,13 @@
 package controler;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.view.View;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import com.example.tereza.formfiller.Form;
-import com.example.tereza.formfiller.QueCheck;
-import com.example.tereza.formfiller.QueRadio;
-import com.example.tereza.formfiller.Question;
-import com.example.tereza.formfiller.QuestionType;
+import com.example.tereza.structures.Form;
+import com.example.tereza.structures.QueCheck;
+import com.example.tereza.structures.QueRadio;
+import com.example.tereza.structures.Question;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -19,7 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import activity.Activity_fill_form;
 import model.Server;
 
 
@@ -69,6 +64,7 @@ public class Controller {
     public ArrayList<Question> getQuestionsOfForm(Context context, int idForm) {
         ArrayList<Question> questions = new ArrayList<>();
         JSONArray jAquestions = this.server.getQuestionsOfForm(idForm, context);
+        System.out.println(jAquestions);
         JSONObject que;
         String[][] options;
         JSONArray jAoptions;

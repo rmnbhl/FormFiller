@@ -1,4 +1,4 @@
-package com.example.tereza.formfiller;
+package com.example.tereza.structures;
 
 import android.content.Context;
 import android.util.Log;

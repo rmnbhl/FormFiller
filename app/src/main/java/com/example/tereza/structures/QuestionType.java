@@ -1,4 +1,4 @@
-package com.example.tereza.formfiller;
+package com.example.tereza.structures;
 
 /**
  * Created by tereza on 05-02-2016.

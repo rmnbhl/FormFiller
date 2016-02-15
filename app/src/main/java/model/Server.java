@@ -1,16 +1,9 @@
 package model;
 
 import android.content.Context;
-import android.util.Log;
-
-import com.example.tereza.formfiller.Form;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-
-import java.util.ArrayList;
 
 /**
  * contexts parameters necessary just for purposes local DB - will be replaced by server DB
@@ -37,8 +30,13 @@ public class Server {
     }
 
     /**
-     * return forms without questions - only id, name, filled(state)
-     * @param id_android - for authorization in db to find out, if form was already filled from that device
+     * return JSONArray of forms without questions in following format:
+     * [
+     * {"id_form":0,
+     * "filled":"true",
+     * "name":"podpisový test"}
+     * ]
+     * @param id_android - for authorization in db in order find out, if form was already filled from that device
      * @param context
      * @return
      */
@@ -53,7 +51,7 @@ public class Server {
     }
 
     /**
-     *
+     * Send filled form in JSON with separated form's ID
      * @param idForm
      * @param form
      * @return
@@ -63,7 +61,17 @@ public class Server {
     }
 
     /**
-     * return form questions depend on form's id
+     * return form's questions depend on form's id
+     * in following JSONArray of questions:
+     * [
+     * {"question_type":"1",
+     * "text":"question"
+     * "options":
+     *  [
+     *      {"id":"0"
+     *      "text":"optionA"}
+     *  ]
+     * }]
      * @param idForm
      * @param context
      * @return

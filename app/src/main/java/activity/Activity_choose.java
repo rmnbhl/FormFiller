@@ -17,8 +17,8 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.tereza.formfiller.Form;
-import com.example.tereza.formfiller.R;
+import com.example.tereza.structures.Form;
+import com.example.tereza.structures.R;
 
 import java.util.ArrayList;
 
@@ -27,12 +27,11 @@ import controler.Controller;
 public class Activity_choose extends AppCompatActivity {
 
     private final String TAG = "CHOOSE ACTIVITY";
-    private String android_id = Settings.Secure.getString(this.getContentResolver(),
-            Settings.Secure.ANDROID_ID);
 
     private final Controller controller = Controller.getInstance();
     private ArrayList<Form> forms;
     private int selectedPosition;
+    private String android_id;
 
     private FormAdapter formAdapter;
     private ListView formList;
@@ -44,8 +43,10 @@ public class Activity_choose extends AppCompatActivity {
         setContentView(R.layout.activity_choose);
         selectedPosition = 0;
         findViewsById();
+        android_id = Settings.Secure.getString(this.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
 
-        this.forms = controller.getForms(this, this.android_id);
+        this.forms = controller.getForms(this, android_id);
         formAdapter = new FormAdapter(Activity_choose.this, R.layout.layout_list_item_form, forms);
         adjustListView(formList);
         formList.setAdapter(formAdapter);
