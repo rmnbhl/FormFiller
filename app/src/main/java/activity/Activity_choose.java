@@ -1,8 +1,11 @@
 package activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +27,8 @@ import controler.Controller;
 public class Activity_choose extends AppCompatActivity {
 
     private final String TAG = "CHOOSE ACTIVITY";
+    private String android_id = Settings.Secure.getString(this.getContentResolver(),
+            Settings.Secure.ANDROID_ID);
 
     private final Controller controller = Controller.getInstance();
     private ArrayList<Form> forms;
@@ -40,7 +45,7 @@ public class Activity_choose extends AppCompatActivity {
         selectedPosition = 0;
         findViewsById();
 
-        this.forms = controller.getForms(this);
+        this.forms = controller.getForms(this, this.android_id);
         formAdapter = new FormAdapter(Activity_choose.this, R.layout.layout_list_item_form, forms);
         adjustListView(formList);
         formList.setAdapter(formAdapter);
@@ -53,7 +58,7 @@ public class Activity_choose extends AppCompatActivity {
     }
 
     public void refreshList() {
-        this.forms = controller.getForms(this);
+        this.forms = controller.getForms(this, this.android_id);
         this.formAdapter.notifyDataSetChanged();
     }
 
@@ -74,9 +79,22 @@ public class Activity_choose extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), Activity_fill_form.class);
-                i.putExtra("ID_FORM", selectedPosition);
-                startActivity(i);
+                if(forms.get(selectedPosition).isFilled())
+                    new AlertDialog.Builder(Activity_choose.this)
+                            .setTitle("Info")
+                            .setMessage("Dotazník je možné vyplniť len raz.")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .show();
+                else {
+                    Intent i = new Intent(v.getContext(), Activity_fill_form.class);
+                    i.putExtra("ID_FORM", selectedPosition);
+                    startActivity(i);
+                }
             }
         });
     }
@@ -136,6 +154,5 @@ public class Activity_choose extends AppCompatActivity {
             TextView textView;
             int position;
         }
-
     }
 }

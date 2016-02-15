@@ -1,18 +1,10 @@
 package com.example.tereza.formfiller;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.text.Layout;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 /**
  * Created by tereza on 05-02-2016.
@@ -20,7 +12,7 @@ import android.widget.TextView;
 public class QueCheck extends QuestionAb {
 
     private static final QuestionType type = QuestionType.check;
-    private CheckBox[] cb;
+    private transient CheckBox[] cb;
 
     public QueCheck(String description, String[][] options, Context context) {
         super(description, options, context);

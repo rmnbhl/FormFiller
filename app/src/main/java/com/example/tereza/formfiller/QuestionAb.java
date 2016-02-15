@@ -2,7 +2,6 @@ package com.example.tereza.formfiller;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,8 +13,8 @@ public abstract class QuestionAb implements Question {
     protected String description;
     protected String[][] options;
     protected boolean[] answers;
-    protected Context context;
-    protected LinearLayout linLay;
+    protected transient Context context;
+    protected transient LinearLayout linLay;
 
     public QuestionAb(String description, String[][] options, Context context) {
         this.description = description;

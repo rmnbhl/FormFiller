@@ -5,12 +5,15 @@ import android.os.AsyncTask;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.example.tereza.formfiller.Form;
 import com.example.tereza.formfiller.QueCheck;
 import com.example.tereza.formfiller.QueRadio;
 import com.example.tereza.formfiller.Question;
 import com.example.tereza.formfiller.QuestionType;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,8 +38,8 @@ public class Controller {
         this.server = new Server();
     }
 
-    public ArrayList<Form> getForms(Context context) {
-            JSONArray jAforms = server.getForms("device_id", context);
+    public ArrayList<Form> getForms(Context context, String android_id) {
+            JSONArray jAforms = server.getForms(android_id, context);
             try {
                 buildForms(jAforms);
             } catch (JSONException e) {
@@ -54,8 +57,13 @@ public class Controller {
     }
 
     //build JSONArray from form
-    public boolean sendFilledForm(Form f) {
-        return server.sendFilledForm(f.getId(), null);
+    public boolean sendFilledForm(Form form) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+        Gson gson = gsonBuilder.create();
+        String jOform = gson.toJson(form);
+        System.out.println(jOform);
+        return server.sendFilledForm(form.getId(), jOform);
     }
 
     public ArrayList<Question> getQuestionsOfForm(Context context, int idForm) {
@@ -101,11 +109,6 @@ public class Controller {
         System.out.println("form with " + idForm + "does not exist");
         return null;
     }
-
-//    public ArrayList<Form> getFormsState(Context context) {
-//        this.server = new Server(context);
-//
-//    }
 
     public void setForms(ArrayList<Form> forms) {
         this.forms = forms;

@@ -1,12 +1,15 @@
 package activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +25,9 @@ import controler.Controller;
 import com.example.tereza.formfiller.Form;
 import com.example.tereza.formfiller.Question;
 import com.example.tereza.formfiller.R;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 
@@ -35,6 +41,11 @@ public class Activity_fill_form extends AppCompatActivity {
 
     private ListView listQuestions;
     private Button buttConfirm;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +53,9 @@ public class Activity_fill_form extends AppCompatActivity {
         setContentView(R.layout.activity_activity_fill_form);
         findViewsById();
         init();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     public void init() {
@@ -63,18 +77,11 @@ public class Activity_fill_form extends AppCompatActivity {
         buttConfirm.setText("send");
         buttConfirm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                AlertDialog sendingDialog = new AlertDialog.Builder(context)
-                        .setTitle("Sending form")
-                        .setMessage("Sending data to server...")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent i = new Intent(context, Activity_choose.class);
-                                startActivity(i);
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_menu_upload)
-                        .show();
-                AsyncTaskRunner runner = new AsyncTaskRunner(context, sendingDialog);
+                ProgressDialog dialog = ProgressDialog.show(Activity_fill_form.this, "",
+                        "Odosielanie dotazníku na server. Prosím čakajte...", true);
+                dialog.setIndeterminate(true);
+                AsyncTaskRunner runner = new AsyncTaskRunner(context, dialog);
+
                 runner.execute("send");
             }
         });
@@ -92,12 +99,50 @@ public class Activity_fill_form extends AppCompatActivity {
         this.listQuestions = (ListView) findViewById(R.id.list_questions);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Activity_fill_form Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://activity/http/host/path")
+        );
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Activity_fill_form Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://activity/http/host/path")
+        );
+        client.disconnect();
+    }
+
     class QuestionAdapter extends ArrayAdapter<Question> {
         Context mContext;
         int layoutResourceId;
         ArrayList<Question> questions = null;
         LayoutInflater mInflater = getLayoutInflater();
-        int[] colors = new int[] { Color.rgb(161, 216, 218), Color.rgb(229, 238, 243)};
+        int[] colors = new int[]{Color.rgb(161, 216, 218), Color.rgb(229, 238, 243)};
 
         QuestionAdapter(Context context, int resId, ArrayList<Question> questions) {
             super(context, resId, questions);
@@ -112,11 +157,11 @@ public class Activity_fill_form extends AppCompatActivity {
             row.setTag(position);
             que.setOnListener( //TODO
                     new RadioGroup.OnCheckedChangeListener() {
-                                  @Override
-                                  public void onCheckedChanged(RadioGroup group, int checkedId) {
-                                      que.setAnswer(checkedId);
-                                  }
-                              },
+                        @Override
+                        public void onCheckedChanged(RadioGroup group, int checkedId) {
+                            que.setAnswer(checkedId);
+                        }
+                    },
                     new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -139,14 +184,16 @@ public class Activity_fill_form extends AppCompatActivity {
         private String resp;
         private Context context;
         private AlertDialog sendingDialog;
+        private ProgressDialog dialog;
 
         public AsyncTaskRunner(Context context) {
             this.context = context;
         }
 
-        public AsyncTaskRunner(Context context, AlertDialog sendingDialog) {
+        public AsyncTaskRunner(Context context, ProgressDialog sendingDialog) {
             this.context = context;
-            this.sendingDialog = sendingDialog;
+            this.dialog = sendingDialog;
+//            this.sendingDialog = sendingDialog;
         }
 
         @Override
@@ -154,13 +201,13 @@ public class Activity_fill_form extends AppCompatActivity {
             publishProgress("Sleeping..."); // Calls onProgressUpdate()
             try {
                 switch (params[0]) {
-                    case "load" :
+                    case "load":
                         form = controller.getForm(this.context, Integer.parseInt(params[1]));
                         break;
-                    case "send" :
+                    case "send":
                         Thread.sleep(2500);
                         controller.sendFilledForm(form);
-                        printAnswers();
+                        printAnswers(form);
                         break;
                 }
                 resp = params[0];
@@ -172,13 +219,14 @@ public class Activity_fill_form extends AppCompatActivity {
             return resp;
         }
 
-        private void printAnswers() {
+        private void printAnswers(Form f) {
+            ArrayList<Question> lquestions = f.getQuestions();
             Question q;
             System.out.println("ANSWERS:");
-            for (int i = 0; i < questions.size(); i++) {
-                q = questions.get(i);
+            for (int i = 0; i < lquestions.size(); i++) {
+                q = lquestions.get(i);
                 for (int j = 0; j < q.getAnswers().length; j++) {
-                    if(q.getAnswers()[j])
+                    if (q.getAnswers()[j])
                         System.out.println(q.getDescription() + ":\n " +
                                 q.getOptions()[j][0]);
                 }
@@ -189,12 +237,24 @@ public class Activity_fill_form extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             // execution of result of Long time consuming operation
-            switch(result) {
-                case "load" :
+            switch (result) {
+                case "load":
                     finishFormLoading();
                     break;
-                case "send" :
-                    this.sendingDialog.setMessage("Form successfully sent");
+                case "send":
+                    this.dialog.dismiss();
+
+                    new AlertDialog.Builder(context)
+                        .setTitle("Odosielanie")
+                        .setMessage("Dotazník úspešne odoslaný.")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent i = new Intent(context, Activity_choose.class);
+                                startActivity(i);
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_menu_upload)
+                        .show();
             }
         }
     }

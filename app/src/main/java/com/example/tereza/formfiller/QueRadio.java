@@ -1,16 +1,10 @@
 package com.example.tereza.formfiller;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 /**
  * Created by tereza on 07-02-2016.
@@ -18,7 +12,8 @@ import android.widget.TextView;
 public class QueRadio extends QuestionAb {
 
     private static QuestionType type = QuestionType.radio;
-    private RadioGroup rg;
+    private transient RadioGroup rg;
+
     public QueRadio(String description, String[][] options, Context context) {
         super(description, options, context);
     }

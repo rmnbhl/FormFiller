@@ -30,6 +30,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String OTAZKA_COLUMN_ID = "id_otazka";
     public static final String OTAZKA_COLUMN_TEXT = "text";
     public static final String OTAZKA_COLUMN_ID_TEST = "id_testu";
+    //0 - multiple opt - check box, 1 - single option - radio button
     public static final String OTAZKA_COLUMN_QUESTION_TYPE = "typ_otazky";
 
     public static final String MOZNOST_TABLE_NAME = "moznost";
@@ -38,12 +39,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String MOZNOST_COLUMN_ID_QUESTION = "id_otazka";
 
 
-
-
-    //    public static final String CONTACTS_COLUMN_EMAIL = "email";
-//    public static final String CONTACTS_COLUMN_STREET = "street";
-//    public static final String CONTACTS_COLUMN_CITY = "place";
-//    public static final String CONTACTS_COLUMN_PHONE = "phone";
     private Context context;
 
     public DBHelper(Context context)
@@ -55,8 +50,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // TODO Auto-generated method stub
-
         System.out.println("DBHelper onCreate");
         db.execSQL(
                 "CREATE TABLE IF NOT EXISTS `moznost` (" +
@@ -88,13 +81,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         insertFromFile(this.context, R.raw.insert, db);
         this.updateQuestions(db);
-
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO Auto-generated method stub
-        db.execSQL("DROP TABLE IF EXISTS contacts");
         onCreate(db);
     }
 
@@ -122,50 +112,15 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean insertContact  (String name, String phone, String email, String street,String place)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name", name);
-        contentValues.put("phone", phone);
-        contentValues.put("email", email);
-        contentValues.put("street", street);
-        contentValues.put("place", place);
-        db.insert("contacts", null, contentValues);
-        return true;
-    }
-
     public void updateQuestions(SQLiteDatabase db) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(this.OTAZKA_COLUMN_QUESTION_TYPE, "1");
         db.update(this.OTAZKA_TABLE_NAME, contentValues, this.OTAZKA_COLUMN_ID_TEST + " = '1'", null);
     }
 
-    public Integer deleteContact (Integer id)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("contacts",
-                "id = ? ",
-                new String[] { Integer.toString(id) });
-    }
-
-//    public ArrayList<String> getAllCotacts()
-//    {
-//        ArrayList<String> array_list = new ArrayList<String>();
-//
-//        //hp = new HashMap();
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor res =  db.rawQuery( "select * from contacts", null );
-//        res.moveToFirst();
-//
-//        while(res.isAfterLast() == false){
-//            array_list.add(res.getString(res.getColumnIndex(CONTACTS_COLUMN_NAME)));
-//            res.moveToNext();
-//        }
-//        return array_list;
-//    }
-
-    //return state(id, name, filled) of forms - without questions
+    /**
+     *  return state(id, name, filled) of forms - without questions
+     */
     public JSONArray getFormsState() throws JSONException {
         JSONArray jAforms = new JSONArray();
         JSONObject jOform;
@@ -191,7 +146,7 @@ public class DBHelper extends SQLiteOpenHelper {
         JSONArray jAform = new JSONArray();
         JSONObject jOquestion;
         JSONObject jOoption;
-        JSONArray jAoptions = new JSONArray();
+        JSONArray jAoptions;
         Cursor res;
         int[] questionsId = getQuestionsIdOfForm(idTest);
         SQLiteDatabase db = this.getReadableDatabase();
@@ -219,15 +174,13 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         return jAform;
-
-//        res = db.rawQuery("select o.id_otazka, o.text, m.id_moznost, m.text from otazka o" +
-//                "join moznost m " +
-//                "where o.id_otazka = m.id_otazka and " +
-//                "o.id_testu = '" + idTest + "';", null);
-//        res.moveToFirst();
-
     }
 
+    /**
+     * return set of question - option depend to given test ID
+     * @param idTest
+     * @return
+     */
     private int[] getQuestionsIdOfForm(int idTest) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select id_otazka from otazka o where o.id_testu = '" + idTest + "';", null);
@@ -242,7 +195,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public boolean updateForm(int idForm, JSONArray form) {
+    public boolean updateForm(int idForm, String form) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("vyplneny", "true");

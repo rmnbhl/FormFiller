@@ -1,18 +1,21 @@
 package com.example.tereza.formfiller;
 
-import android.content.Context;
-import android.os.Parcel;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
 /**
  * Created by tereza on 04-02-2016.
  */
-public class Form implements Comparable {
+public class Form {
 
+    @SerializedName("name")
     private String name;
+    @SerializedName("filled")
     private boolean filled;
+    @SerializedName("id")
     private int id;
+    @SerializedName("questions")
     private ArrayList<Question> questions;
 
     public Form(String name, int id){
@@ -23,11 +26,6 @@ public class Form implements Comparable {
         this.name = name;
         this.filled = filled;
         this.id = id;
-    }
-
-    protected Form(Parcel in) {
-        name = in.readString();
-        filled = in.readByte() != 0;
     }
 
     public ArrayList<Question> getQuestions() {
@@ -52,24 +50,6 @@ public class Form implements Comparable {
 
     public void setFilled(boolean filled) {
         this.filled = filled;
-    }
-
-//    //inflate from XML/json received from server
-//    public void inflateForm(Context context) {
-//        ArrayList<Question> ques = new ArrayList<>();
-//        for (int i = 0; i < 15; i++) {
-//            ques.add(new QueCheck("  " + (i + 1) + " check", new String[]{"a", "b", "c"}, context));
-//            ques.add(new QueRadio("  " + (i + 1) + " radio", new String[]{"a", "b", "c"}, context));
-//        }
-//        this.questions = ques;
-//    }
-
-    @Override
-    public int compareTo(Object another) {
-        if(this.id == ((Form) another).id)
-            return 0;
-        else
-            return -1;
     }
 
     public int getId() {
